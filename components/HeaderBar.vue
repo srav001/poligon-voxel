@@ -22,14 +22,6 @@ nav {
 	height: 4rem;
 }
 
-.sub-title {
-	font-weight: 100;
-	color: gray;
-}
-.main-title {
-	font-weight: 500;
-}
-
 .cart-icon {
 	cursor: pointer;
 }

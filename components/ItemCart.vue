@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import { computed } from 'vue';
 import itemsStore from '@/helper/itemsStore';
 
 defineProps({
@@ -11,6 +12,16 @@ defineProps({
 defineEmits<{
 	(e: 'close', value: boolean): void;
 }>();
+
+const totalCost = computed(() =>
+	itemsStore.state.items.reduce((acc, item) => {
+		return acc + item.price;
+	}, 0)
+);
+
+function checkout() {
+	alert('Coming soon...hopefully');
+}
 </script>
 
 <template>
@@ -26,7 +37,7 @@ defineEmits<{
 						<p>{{ item.title }}</p>
 						<div class="item-price">
 							<span>${{ item.price }}</span>
-							<span style="cursor: pointer" @click="itemsStore.removeItem(item)">Remove</span>
+							<span class="item-remove" @click="itemsStore.removeItem(item)">Remove</span>
 						</div>
 					</div>
 				</div>
@@ -36,15 +47,24 @@ defineEmits<{
 			<footer class="w-full">
 				<h2 class="w-full item-summary">
 					<span>Total</span>
-					<span>${{ 242.2 }}</span>
+					<span>${{ totalCost }}</span>
 				</h2>
-				<button>Continue to Checkout</button>
+				<button @click="checkout()">Continue to Checkout</button>
 			</footer>
 		</template>
 	</DrawerUtility>
 </template>
 
 <style scoped lang="scss">
+.item-remove {
+	cursor: pointer;
+	transition: all 300ms cubic-bezier(0.4, 0, 0.2, 1);
+
+	&:hover {
+		color: black;
+	}
+}
+
 button {
 	cursor: pointer;
 	height: 3rem;

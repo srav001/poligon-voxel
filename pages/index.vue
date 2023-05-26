@@ -42,31 +42,53 @@ export default {
 <template>
 	<main>
 		<HeaderBar @open-cart="showCart = true" />
-		<section id="banner">Welcome to Voxel Store!</section>
+		<section id="banner">
+			<h1 class="w-full">Welcome to Voxel Store!</h1>
+			<p class="w-full">Discover our wide range of products</p>
+		</section>
 		<SectionSwitcher :categories="categories" @choose-category="filterByCategory($event)" />
 		<section id="category-section" class="px-common">
 			<TransitionGroup name="cart-items" tag="div" class="row">
-				<ItemCard v-for="item in itemsDisplayed" :key="item.id" class="col-3" :item="item"></ItemCard>
+				<ItemCard v-for="item in itemsDisplayed" :key="item.id" :item="item"></ItemCard>
 			</TransitionGroup>
 		</section>
 		<ItemCart :show="showCart" @close="showCart = false" />
+		<footer id="main-footer">
+			<a>
+				<span class="main-title"> Voxel </span>
+				<span class="sub-title"> Store </span>
+			</a>
+		</footer>
 	</main>
 </template>
 
-<style>
+<style lang="scss">
+#main-footer {
+	display: flex;
+	justify-content: center;
+	align-items: center;
+	height: 4rem;
+	border-top: 1px solid rgba(26, 26, 26, 0.1);
+	margin-top: 2rem;
+}
+
 #banner {
 	height: 23rem;
 	background-color: rgb(128, 128, 128, 0.2);
 	border: 1px solid rgb(128, 128, 128, 0.2);
 	display: flex;
+	flex-direction: column;
+	align-content: center;
 	align-items: center;
 	justify-content: center;
-}
 
-.row {
-	display: grid;
-	grid-template-columns: repeat(4, minmax(0, 1fr));
-	gap: 0.75rem;
+	* {
+		text-align: center;
+	}
+
+	h1 {
+		font-size: 3rem;
+	}
 }
 
 .cart-items-move,

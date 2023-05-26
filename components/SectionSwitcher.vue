@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { shallowRef } from 'vue';
 
-defineProps<{
+const props = defineProps<{
 	categories: string[];
 }>();
 
@@ -24,19 +24,32 @@ function capitalize(text: string) {
 
 	return text.charAt(0).toUpperCase() + text.slice(1);
 }
+
+const allCategories = ['all', ...props.categories];
 </script>
 
 <template>
 	<section class="w-full">
 		<div class="w-full category-tabs">
 			<span
-				v-for="(category, key) in ['all', ...categories]"
+				v-for="(category, key) in allCategories"
 				:key="key"
 				class="tab"
 				:class="{ 'active-item': category === currentCategory, 'ml-4rem': key === 0 }"
 				@click="chooseCategory(category)">
 				{{ capitalize(category) }}
 			</span>
+		</div>
+		<div id="select-wrapper" class="w-full">
+			<select class="category-select">
+				<option
+					v-for="(category, key) in allCategories"
+					:key="key"
+					:value="category"
+					@change="chooseCategory(category)">
+					{{ capitalize(category) }}
+				</option>
+			</select>
 		</div>
 	</section>
 </template>
@@ -46,48 +59,9 @@ section {
 	margin-bottom: 1.75rem;
 }
 
-.category-tabs {
-	height: 4rem;
-	border-bottom: 1px solid rgba(0, 0, 0, 0.1);
+#select-wrapper {
 	display: flex;
-	border-collapse: separate;
-	span.tab {
-		position: relative;
-		transition: all 300ms cubic-bezier(0.4, 0, 0.2, 1);
-		padding: 1.4em 0.1rem;
-		margin: 0 0.5rem;
-		transform: translate3d(0, 0, 0);
-		color: gray;
-		white-space: nowrap;
-		cursor: pointer;
-		&:first-child {
-			margin-left: 6rem;
-		}
-		&:hover {
-			color: black;
-			cursor: pointer;
-		}
-		&:after {
-			transition: all 300ms cubic-bezier(0.4, 0, 0.2, 1);
-			will-change: transform, box-shadow, opacity;
-			position: absolute;
-			content: '';
-			height: 3px;
-			bottom: 0px;
-			left: 0px;
-			right: 0px;
-			border-radius: 3px 3px 0px 0px;
-			background: black;
-			opacity: 0;
-			transform: scale(0, 1);
-		}
-		&.active-item {
-			color: black;
-			&:after {
-				opacity: 1;
-				transform: scale(1, 1);
-			}
-		}
-	}
+	justify-content: center;
+	align-content: center;
 }
 </style>
