@@ -1,31 +1,39 @@
 <script>
+import itemStore from '@/helper/itemsStore';
+
 export default {
 	name: 'IndexPage',
 	data() {
 		return {
-			postByCategory: {},
-			postsDisplayed: [],
-			posts: [],
-			categories: []
+			itemsByCategory: {},
+			itemsDisplayed: [],
+			items: [],
+			categories: [],
+			showCart: false
 		};
 	},
 	async fetch() {
 		this.categories = await this.$http.$get('https://fakestoreapi.com/products/categories');
-		this.posts = await this.$http.$get('https://fakestoreapi.com/products');
-		this.postsDisplayed = this.posts;
+		this.items = await this.$http.$get('https://fakestoreapi.com/products');
+		this.itemsDisplayed = this.items;
+	},
+	computed: {
+		itemsInCart() {
+			return itemStore.items.value;
+		}
 	},
 	beforeMount() {
-		this.posts.forEach(post => {
-			if (this.postByCategory[post.category]) {
-				this.$set(this.postByCategory, post.category, [...this.postByCategory[post.category], post]);
+		this.items.forEach(item => {
+			if (this.itemsByCategory[item.category]) {
+				this.$set(this.itemsByCategory, item.category, [...this.itemsByCategory[item.category], item]);
 			} else {
-				this.$set(this.postByCategory, post.category, [post]);
+				this.$set(this.itemsByCategory, item.category, [item]);
 			}
 		});
 	},
 	methods: {
 		filterByCategory(category) {
-			this.postsDisplayed = category === 'all' ? this.posts : this.postByCategory[category];
+			this.itemsDisplayed = category === 'all' ? this.items : this.itemsByCategory[category];
 		}
 	}
 };
@@ -33,14 +41,15 @@ export default {
 
 <template>
 	<main>
-		<HeaderBar />
+		<HeaderBar @open-cart="showCart = true" />
 		<section id="banner">Welcome to Voxel Store!</section>
 		<SectionSwitcher :categories="categories" @choose-category="filterByCategory($event)" />
 		<section id="category-section" class="px-common">
-			<TransitionGroup name="cart-items" tag="div" class="grid">
-				<ItemCard v-for="item in postsDisplayed" :key="item.id" :item="item"></ItemCard>
+			<TransitionGroup name="cart-items" tag="div" class="row">
+				<ItemCard v-for="item in itemsDisplayed" :key="item.id" class="col-3" :item="item"></ItemCard>
 			</TransitionGroup>
 		</section>
+		<ItemCart :show="showCart" @close="showCart = false" />
 	</main>
 </template>
 
@@ -54,7 +63,7 @@ export default {
 	justify-content: center;
 }
 
-.grid {
+.row {
 	display: grid;
 	grid-template-columns: repeat(4, minmax(0, 1fr));
 	gap: 0.75rem;

@@ -1,15 +1,14 @@
 <script setup lang="ts">
-defineProps<{
-	item: {
-		id: number;
-		title: string;
-		price: number;
-		category: string;
-		image: string;
-	};
-}>();
-</script>
+import type { Item } from '@/types/Item';
+import itemStore from '@/helper/itemsStore';
 
+defineProps({
+	item: {
+		type: Object as () => Item,
+		required: true
+	}
+});
+</script>
 <template>
 	<div class="item mt-half">
 		<img class="item-image" :src="item.image" :alt="item.title" width="180" height="250" />
@@ -17,7 +16,7 @@ defineProps<{
 			<p>{{ item.title }}</p>
 			<p style="color: gray">${{ item.price }}</p>
 		</div>
-		<button class="add-item">Add to cart</button>
+		<button class="add-item" @click="itemStore.addItem(item)">Add to cart</button>
 	</div>
 </template>
 

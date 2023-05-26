@@ -5,7 +5,7 @@ export default {
 		Drawer: () => (process.client ? import('vue-simple-drawer') : null)
 	},
 	props: {
-		showSlider: {
+		showDrawer: {
 			type: Boolean,
 			default: false
 		}
@@ -26,9 +26,6 @@ export default {
 		this.handleResize();
 	},
 	methods: {
-		closeSlider() {
-			this.$emit('close');
-		},
 		handleResize() {
 			if (window.innerWidth > this.dataOptions.width + 40) {
 				this.sliderWidth = this.dataOptions.width;
@@ -42,24 +39,30 @@ export default {
 
 <template>
 	<ClientOnly>
-		<Drawer align="right" @close="closeSlider">
-			<div v-if="showSlider" id="slider" :style="'width:' + sliderWidth + 'px'">
-				<slot name="slider-header">
+		<Drawer align="right" :closeable="false" @close="$emit('close')">
+			<div v-if="showDrawer" id="slider" :style="'width:' + sliderWidth + 'px'">
+				<header class="slider-header">
 					<h4>Heading</h4>
-				</slot>
-				<slot name="slider-body" />
+					<h1 @click="$emit('close')">X</h1>
+				</header>
+				<slot />
 				<hr />
-				<slot name="slider-footer">
-					<div>
-						<button @click.prevent="closeSlider">Close</button>
-					</div>
-				</slot>
 			</div>
 		</Drawer>
 	</ClientOnly>
 </template>
 
-<style>
+<style lang="scss">
+.slider-header {
+	display: flex;
+	justify-content: space-between;
+	align-items: center;
+
+	h1 {
+		cursor: pointer;
+	}
+}
+
 .vue-simple-drawer {
 	background-color: #fff !important;
 	color: #333 !important;
