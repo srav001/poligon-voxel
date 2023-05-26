@@ -9,13 +9,21 @@ export default {
 			itemsDisplayed: [],
 			items: [],
 			categories: [],
-			showCart: false
+			showCart: false,
+			emptyMessage: 'Oops! Looks like there are no items found'
 		};
 	},
 	async fetch() {
-		this.categories = await this.$http.$get('https://fakestoreapi.com/products/categories');
-		this.items = await this.$http.$get('https://fakestoreapi.com/products');
-		this.itemsDisplayed = this.items;
+		try {
+			this.categories = await this.$http.$get('https://fakestoreapi.com/products/categories');
+			this.items = await this.$http.$get('https://fakestoreapi.com/products');
+		} catch (error) {
+			if (process.env.NODE_ENV === 'development') {
+				console.log(error);
+			}
+		} finally {
+			if (this.items.length > 0) this.itemsDisplayed = this.items;
+		}
 	},
 	computed: {
 		itemsInCart() {
@@ -46,11 +54,17 @@ export default {
 			<h1 class="w-full">Welcome to Voxel Store!</h1>
 			<p class="w-full">Discover our wide range of products</p>
 		</section>
-		<SectionSwitcher :categories="categories" @choose-category="filterByCategory($event)" />
+		<SectionSwitcher
+			v-if="categories.length > 0"
+			:categories="categories"
+			@choose-category="filterByCategory($event)" />
 		<section id="category-section" class="px-common">
-			<TransitionGroup name="cart-items" tag="div" class="row">
-				<ItemCard v-for="item in itemsDisplayed" :key="item.id" :item="item"></ItemCard>
-			</TransitionGroup>
+			<template v-if="itemsDisplayed.length > 0">
+				<TransitionGroup name="cart-items" tag="div" class="row">
+					<ItemCard v-for="item in itemsDisplayed" :key="item.id" :item="item" @open-cart="showCart = true"></ItemCard>
+				</TransitionGroup>
+			</template>
+			<div v-else style="margin: 5rem; text-align: center; align-content: center; color: gray">{{ emptyMessage }}</div>
 		</section>
 		<ItemCart :show="showCart" @close="showCart = false" />
 		<footer id="main-footer">

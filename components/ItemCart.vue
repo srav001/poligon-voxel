@@ -14,9 +14,11 @@ defineEmits<{
 }>();
 
 const totalCost = computed(() =>
-	itemsStore.state.items.reduce((acc, item) => {
-		return acc + item.price;
-	}, 0)
+	itemsStore.state.items
+		.reduce((acc, item) => {
+			return acc + item.price;
+		}, 0)
+		.toFixed(2)
 );
 
 function checkout() {
@@ -30,7 +32,7 @@ function checkout() {
 			<h2>Your Cart {{ itemsStore.state.items.length > 0 ? `(${itemsStore.state.items.length})` : '' }}</h2>
 		</template>
 		<template #default>
-			<section>
+			<section v-if="itemsStore.state.items.length > 0">
 				<div v-for="item in itemsStore.state.items" :key="item.id" class="w-full item-in-cart">
 					<img :src="item.image" width="60" height="60" />
 					<div class="item-details">
@@ -42,9 +44,16 @@ function checkout() {
 					</div>
 				</div>
 			</section>
+			<div v-else style="margin: 5rem; text-align: center; align-content: center; color: gray">
+				It's empty here.
+				<br />
+				<span style="min-height: 2rem"></span>
+				<br />
+				Please add items to your cart.
+			</div>
 		</template>
 		<template #footer>
-			<footer class="w-full">
+			<footer v-if="itemsStore.state.items.length > 0" class="w-full">
 				<h2 class="w-full item-summary">
 					<span>Total</span>
 					<span>${{ totalCost }}</span>

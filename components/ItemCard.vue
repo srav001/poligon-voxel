@@ -2,6 +2,7 @@
 import { onMounted, shallowRef } from 'vue';
 import type { Item } from '@/types/Item';
 import itemStore from '@/helper/itemsStore';
+import addSvg from '~/assets/add.svg?inline';
 
 const props = defineProps({
 	item: {
@@ -14,6 +15,8 @@ const props = defineProps({
 const addItemText = 'Add to cart';
 const removeItemText = 'Remove from cart';
 
+// FIXME: This will break if the user removes an item the cart
+//  don't want to add a deepWatch here because it will be expensive
 const buttonText = shallowRef(addItemText);
 onMounted(() => {
 	if (itemStore.checkIfExists(props.item)) {
@@ -21,6 +24,9 @@ onMounted(() => {
 	}
 });
 
+const emit = defineEmits<{
+	(e: 'open-cart'): void;
+}>();
 const toggleItem = () => {
 	if (itemStore.checkIfExists(props.item)) {
 		itemStore.removeItem(props.item);
@@ -28,6 +34,7 @@ const toggleItem = () => {
 	} else {
 		itemStore.addItem(props.item);
 		buttonText.value = removeItemText;
+		emit('open-cart');
 	}
 };
 </script>
@@ -39,7 +46,10 @@ const toggleItem = () => {
 			<p>{{ item.title }}</p>
 			<p style="color: gray">${{ item.price }}</p>
 		</div>
-		<button class="add-item" @click="toggleItem()">{{ buttonText }}</button>
+		<button class="add-item" @click="toggleItem()">
+			<addSvg v-if="buttonText === addItemText" />
+			{{ buttonText }}
+		</button>
 	</div>
 </template>
 
@@ -55,6 +65,8 @@ const toggleItem = () => {
 }
 
 .add-item {
+	display: flex;
+	align-items: center;
 	border: 0;
 	border-radius: 0.7rem;
 	background-color: rgb(220, 220, 220, 0.3);
