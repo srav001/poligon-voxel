@@ -61,10 +61,10 @@ export default {
 		<section id="category-section" class="px-common">
 			<template v-if="itemsDisplayed.length > 0">
 				<TransitionGroup name="cart-items" tag="div" class="row">
-					<ItemCard v-for="item in itemsDisplayed" :key="item.id" :item="item"></ItemCard>
+					<ItemCard v-for="item in itemsDisplayed" :key="item.id" :item="item" @open-cart="showCart = true"></ItemCard>
 				</TransitionGroup>
 			</template>
-			<div style="margin: 5rem; text-align: center; align-content: center; color: gray">{{ emptyMessage }}</div>
+			<div v-else style="margin: 5rem; text-align: center; align-content: center; color: gray">{{ emptyMessage }}</div>
 		</section>
 		<ItemCart :show="showCart" @close="showCart = false" />
 		<footer id="main-footer">

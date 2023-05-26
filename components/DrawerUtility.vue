@@ -22,6 +22,9 @@ export default {
 	onBeforeMount() {
 		window.addEventListener('resize', this.handleResize);
 	},
+	onBeforeUnmount() {
+		window.removeEventListener('resize', this.handleResize);
+	},
 	mounted() {
 		this.handleResize();
 	},
@@ -43,7 +46,7 @@ export default {
 			<div v-if="showDrawer" id="slider" :style="'width:' + sliderWidth + 'px'">
 				<header class="drawer-header">
 					<slot name="heading" />
-					<h1 style="cursor: pointer" @click="$emit('close')">x</h1>
+					<h1 style="cursor: pointer; font-weight: 100" @click="$emit('close')">x</h1>
 				</header>
 				<hr />
 				<slot />

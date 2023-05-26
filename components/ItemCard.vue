@@ -16,6 +16,7 @@ const addItemText = 'Add to cart';
 const removeItemText = 'Remove from cart';
 
 // FIXME: This will break if the user removes an item the cart
+//  don't want to add a deepWatch here because it will be expensive
 const buttonText = shallowRef(addItemText);
 onMounted(() => {
 	if (itemStore.checkIfExists(props.item)) {
@@ -23,6 +24,9 @@ onMounted(() => {
 	}
 });
 
+const emit = defineEmits<{
+	(e: 'open-cart'): void;
+}>();
 const toggleItem = () => {
 	if (itemStore.checkIfExists(props.item)) {
 		itemStore.removeItem(props.item);
@@ -30,6 +34,7 @@ const toggleItem = () => {
 	} else {
 		itemStore.addItem(props.item);
 		buttonText.value = removeItemText;
+		emit('open-cart');
 	}
 };
 </script>
