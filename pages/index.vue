@@ -101,6 +101,7 @@ export default {
 	}
 
 	h1 {
+    font-weight: 600;
 		font-size: 3rem;
 	}
 }
