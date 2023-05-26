@@ -1,3 +1,14 @@
+body {
+	background-color: white;
+	margin: 0px;
+	font-family: InstrumentSans;
+}
+
+@font-face {
+	font-family: 'InstrumentSans';
+	src: local('InstrumentSans'), url(~/assets/InstrumentSans.ttf) format('truetype');
+}
+
 .sub-title {
 	font-weight: 100;
 	color: gray;
@@ -21,12 +32,6 @@
 
 .mt-half {
 	margin-top: 0.5rem;
-}
-
-body {
-	background-color: white;
-	margin: 0px;
-	font-family: 'Roboto', sans-serif;
 }
 
 .category-tabs {
