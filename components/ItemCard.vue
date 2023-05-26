@@ -1,14 +1,37 @@
 <script setup lang="ts">
+import { onMounted, shallowRef } from 'vue';
 import type { Item } from '@/types/Item';
 import itemStore from '@/helper/itemsStore';
 
-defineProps({
+const props = defineProps({
 	item: {
 		type: Object as () => Item,
 		required: true
 	}
 });
+
+// TODO: i18n for these
+const addItemText = 'Add to cart';
+const removeItemText = 'Remove from cart';
+
+const buttonText = shallowRef(addItemText);
+onMounted(() => {
+	if (itemStore.checkIfExists(props.item)) {
+		buttonText.value = removeItemText;
+	}
+});
+
+const toggleItem = () => {
+	if (itemStore.checkIfExists(props.item)) {
+		itemStore.removeItem(props.item);
+		buttonText.value = addItemText;
+	} else {
+		itemStore.addItem(props.item);
+		buttonText.value = removeItemText;
+	}
+};
 </script>
+
 <template>
 	<div class="item mt-half">
 		<img class="item-image" :src="item.image" :alt="item.title" width="180" height="250" />
@@ -16,7 +39,7 @@ defineProps({
 			<p>{{ item.title }}</p>
 			<p style="color: gray">${{ item.price }}</p>
 		</div>
-		<button class="add-item" @click="itemStore.addItem(item)">Add to cart</button>
+		<button class="add-item" @click="toggleItem()">{{ buttonText }}</button>
 	</div>
 </template>
 

@@ -14,7 +14,7 @@ export default {
 		return {
 			dataOptions: {
 				align: 'right',
-				width: 500
+				width: 540
 			},
 			sliderWidth: 500
 		};
@@ -41,26 +41,38 @@ export default {
 	<ClientOnly>
 		<Drawer align="right" :closeable="false" @close="$emit('close')">
 			<div v-if="showDrawer" id="slider" :style="'width:' + sliderWidth + 'px'">
-				<header class="slider-header">
-					<h4>Heading</h4>
-					<h1 @click="$emit('close')">X</h1>
+				<header class="drawer-header">
+					<slot name="heading" />
+					<h1 style="cursor: pointer" @click="$emit('close')">x</h1>
 				</header>
+				<hr />
 				<slot />
 				<hr />
+				<slot name="footer" />
 			</div>
 		</Drawer>
 	</ClientOnly>
 </template>
 
 <style lang="scss">
-.slider-header {
+.drawer-header {
 	display: flex;
 	justify-content: space-between;
 	align-items: center;
 
 	h1 {
+		margin: 0;
 		cursor: pointer;
 	}
+
+	h2 {
+		margin: 0;
+	}
+}
+
+hr {
+	border: 1px solid rgba(26, 26, 26, 0.1);
+	margin: 1.5rem 0;
 }
 
 .vue-simple-drawer {
