@@ -9,9 +9,11 @@ const emit = defineEmits<{
 	(e: 'choose-category', category: string): void;
 }>();
 const currentCategory = shallowRef('all');
-function chooseCategory(category: string) {
-	currentCategory.value = category;
-	emit('choose-category', category);
+function chooseCategory(category?: string) {
+	if (category) {
+		currentCategory.value = category;
+	}
+	emit('choose-category', currentCategory.value);
 }
 
 function capitalize(text: string) {
@@ -41,12 +43,8 @@ const allCategories = ['all', ...props.categories];
 			</span>
 		</div>
 		<div id="select-wrapper" class="w-full">
-			<select class="category-select">
-				<option
-					v-for="(category, key) in allCategories"
-					:key="key"
-					:value="category"
-					@change="chooseCategory(category)">
+			<select v-model="currentCategory" class="category-select" @change="chooseCategory()">
+				<option v-for="(category, key) in allCategories" :key="key" :value="category">
 					{{ capitalize(category) }}
 				</option>
 			</select>
